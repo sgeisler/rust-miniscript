@@ -45,6 +45,7 @@ pub use self::satisfied_constraints::Error as InterpreterError;
 pub use self::satisfied_constraints::SatisfiedConstraint;
 pub use self::satisfied_constraints::SatisfiedConstraints;
 pub use self::satisfied_constraints::Stack;
+use bitcoin::util::bip32::DerivationPath;
 
 /// Script descriptor
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -65,6 +66,17 @@ pub enum Descriptor<Pk: MiniscriptKey> {
     Wsh(Miniscript<Pk>),
     /// P2SH-P2WSH
     ShWsh(Miniscript<Pk>),
+}
+
+pub enum DescriptorKey {
+    PukKey(bitcoin::PublicKey),
+    XPub(DescriptorXPub),
+}
+
+pub struct DescriptorXPub {
+    source: Option<([u8; 4], DerivationPath)>,
+    xpub: bitcoin::util::bip32::ExtendedPubKey,
+    derivation_path: DerivationPath,
 }
 
 impl<Pk: MiniscriptKey> Descriptor<Pk> {
